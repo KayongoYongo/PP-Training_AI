@@ -1,16 +1,11 @@
 from PyPDF2 import PdfReader
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import FAISS
-
-import dotenv
-import os
-
-# Load environment variables from a .env file
-dotenv.load_dotenv()
+from langchain_community.vectorstores import Chroma
+from langchain.document_loaders import PDFLoader
 
 # Path to the PDF document
-pdfreader = PdfReader("pdf/Investments.pdf")
+pdf_path = "pdf/Investments.pdf"
 
 # Open the PDF file in read-binary mode
 with open(pdf_path, "rb") as file:
@@ -18,18 +13,18 @@ with open(pdf_path, "rb") as file:
     pdf_text = ""
 
     # Iterate through all the pages of the PDF and extract text
-    for page_num in range(reader.numPages):
-        page = reader.getPage(page_num)
-        pdf_text += page.extractText()
+    for page_num in range(len(reader.pages)):
+        page = reader.pages[page_num]
+        pdf_text += page.extract_text()
 
 # Initialize the loader with the extracted PDF text
-loader = PDFBaseLoader(pdf_text)
+loader = PDFLoader(pdf_text)
 
 # Load the documents from the PDF text
 docs = loader.load()
 
 # Initialize a text splitter with a chunk size of 1000 characters and an overlap of 200 characters
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 
 # Split the loaded documents into smaller chunks
 splits = text_splitter.split_documents(docs)
