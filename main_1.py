@@ -1,16 +1,20 @@
-from load_file import load_pdf
-from split_text import split_text
-from create_embedding import GeminiEmbeddingFunction
-from create_db import create_chroma_db
+from generate import generate_answer
+from load_db import load_chroma_collection
+from prompt import make_rag_prompt
+from relevant import get_relevant_passage
 
+def generate_final_answer(db,query):
+    relevant_text = get_relevant_passage(query, db, n_results=3)
+    prompt = make_rag_prompt(query,
+                             relevant_passage="".join(relevant_text))
+    
+    answer = generate_answer(prompt)
 
-# load the pdf
-pdf_text = load_pdf(file_path="pdf/Investments.pdf")
+    return answer
 
-# split the text into chunks
-chunked_text = split_text(text=pdf_text)
+# load the chroma db
+db = load_chroma_collection(path="./Chroma", name="rag_experiment")
 
-# create the chroma_db
-name = create_chroma_db(documents=chunked_text,
-                            path="./Chroma",
-                            name="rag_experiment")
+answer = generate_final_answer(db,query="what are the benefits of borrowing from saccos?")
+
+print(answer)
