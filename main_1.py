@@ -3,6 +3,7 @@ from load_db import load_chroma_collection
 from prompt import make_rag_prompt
 from relevant import get_relevant_passage
 
+# start wit this file
 def generate_final_answer(db,query):
     relevant_text = get_relevant_passage(query, db, n_results=3)
     prompt = make_rag_prompt(query,
