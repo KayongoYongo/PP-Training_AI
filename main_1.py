@@ -16,6 +16,8 @@ def generate_final_answer(db,query):
 # load the chroma db
 db = load_chroma_collection(path="./Chroma", name="rag_experiment")
 
+# Convert this with Django
+
 answer = generate_final_answer(db,query="what are the benefits of borrowing from saccos?")
 
 print(answer)
