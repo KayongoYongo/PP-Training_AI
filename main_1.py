@@ -20,4 +20,5 @@ db = load_chroma_collection(path="./Chroma", name="rag_experiment")
 
 answer = generate_final_answer(db,query="what are the benefits of borrowing from saccos?")
 
+# finl answer
 print(answer)
